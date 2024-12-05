@@ -10,15 +10,16 @@ conda activate R
 
 rm -r running_NS
 
-builder=/tnorth_labs/COVIDseq/Nextstrain_tools/nextstrain_weekly
-seq=/tnorth_labs/COVIDseq/Nextstrain_tools/weekly_DATA/sequences.fasta
-meta=/tnorthlabs/COVIDseq/Nextstrain_tools/weekly_DATA/metadata.tsv
+builder=nextstrain_weekly
+seq=/tnorth_scratch/bvan-tassel/gisaid_api_downloads/gisaid.fasta
+meta=/tnorth_scratch/bvan-tassel/gisaid_api_downloads/gisaid_meta.tsv
 style=AZ
 config_alt=/tnorth_labs/COVIDseq/Nextstrain_tools/nextstrain_config_alternatives
 cp -R ${builder} running_NS
 cp -R ${config_alt}/${style}/config.json running_NS/config/config.json
 Rscript sample_gisaid.R ${style}
-Rscript pangoColors.R
+
+conda run -n nextstrain python auto_color_assign.py
 
 rooter=$(cat root.name)
 # Replace VttLJ2gz1X4B with the root name in Snake file
@@ -40,4 +41,4 @@ glober=results/out-ncov_*_.json
 fileX=$(echo ${glober})
 cd ..
 today=$(date +"%Y-%m-%d")
-python3 github_upload.py -d $today
+#python3 github_upload.py -d $today

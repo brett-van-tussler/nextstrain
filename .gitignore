@@ -1,0 +1,8 @@
+*.out
+*.json
+running_NS/*
+*.fasta
+*.csv
+*.tsv
+*.txt
+.snakemake

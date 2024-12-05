@@ -15,16 +15,16 @@ def main(current_date):
     current_year = current_date.split('-')[0]
     first_three_letters = current_date.split('-')[1][:3].upper()
     folder = f"{current_year}{first_three_letters}"
-    dir_path = f"/labs/COVIDseq/Nextstrain_buildArchive/cyclical/{folder}"
+    dir_path = f"/tnorth_labs/COVIDseq/Nextstrain_buildArchive/cyclical/{folder}"
     os.makedirs(dir_path, exist_ok=True)
     print(os.stat(json).st_size)
     print(os.stat(json).st_size < 104857600)
     if os.path.isfile(json) and os.stat(json).st_size > 0 and os.stat(json).st_size < 104857600:
         subprocess.run(['cp', json, dir_path])
         subprocess.run(['cp', tip_freq_json, dir_path])
-        subprocess.run(['cp', json, '/labs/COVIDseq/Nextstrain_buildArchive/arizona-covid-19/auspice/arizona-covid-19_AZ.json'])
-        subprocess.run(['cp', tip_freq_json, '/labs/COVIDseq/Nextstrain_buildArchive/arizona-covid-19/auspice/arizona-covid-19_AZ_tip-frequencies.json'])
-        os.chdir('/labs/COVIDseq/Nextstrain_buildArchive/arizona-covid-19/auspice')
+        subprocess.run(['cp', json, '/tnorth_labs/COVIDseq/Nextstrain_buildArchive/arizona-covid-19/auspice/arizona-covid-19_AZ.json'])
+        subprocess.run(['cp', tip_freq_json, '/tnorth_labs/COVIDseq/Nextstrain_buildArchive/arizona-covid-19/auspice/arizona-covid-19_AZ_tip-frequencies.json'])
+        os.chdir('/tnorth_labs/COVIDseq/Nextstrain_buildArchive/arizona-covid-19/auspice')
         subprocess.run(['git', 'add', 'arizona-covid-19_AZ.json'])
         subprocess.run(['git', 'add', 'arizona-covid-19_AZ_tip-frequencies.json'])
         subprocess.run(['git', 'commit', '-m', f"Automated update on {current_date}"])

@@ -54,6 +54,5 @@ if __name__ == '__main__':
         # Add the strain and recency to the dictionary
         node_data["nodes"][strain] = {"recency": recency}
 
-
     with open(args.output, 'wt') as fh:
         json.dump(node_data, fh)

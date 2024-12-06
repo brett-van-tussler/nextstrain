@@ -42,9 +42,7 @@ export AUGUR_RECURSION_LIMIT=10000
 cd running_NS
 snakemake --cores 14
 
-glober=results/out-ncov_*_.json
-fileX=$(echo ${glober})
 cd ..
-today=$(date +"%Y-%m-%d")
+
 # update the github
 python3 github_upload.py

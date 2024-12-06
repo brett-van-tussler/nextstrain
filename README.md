@@ -122,7 +122,7 @@ The script is scheduled to run daily using a cron job. Example cron entry:
 40 1 * * * source /home/bvan-tassel/miniforge3/etc/profile.d/conda.sh && conda activate nextstrain; cd /tnorth_labs/COVIDseq/nextstrain/ && sh automated_nextstrain.sh | mail -s "Nextstrain update" bvan-tassel@tgen.org
 ```
 
-This schedules the script to run at 3:00 AM every day.
+This schedules the script to run at 1:40 AM every day.
 
 ---
 

@@ -70,21 +70,22 @@ def main():
     arizona_meta = pd.read_csv('arizona_meta.tsv', sep='\t')
     all_arizona_lineages = arizona_meta['Pango lineage'].unique().tolist()
     missing_lineages = list(set(all_arizona_lineages) - set(pangocolors_lineages))
-
+    
     new_lineage_df = pd.DataFrame({
         'feature': ['Pango_lineage'] * len(missing_lineages),
         'value': missing_lineages,
         'color': [''] * len(missing_lineages)
     })
-
+    new_lineage_df = new_lineage_df[~new_lineage_df['value'].isna()]
+    if new_lineage_df.empty:
+        pangocolors.to_csv('running_NS/config/colors.tsv', index=False, header=False, sep='\t', mode='a')
+        exit()
     # Read new_lineage_df and process
     new_lineage_df=new_lineage_df[~new_lineage_df['value'].isna()]
     new_lineage_df[['pango_letters', 'numbers']] = new_lineage_df['value'].str.split('.', n=1, expand=True)
     new_lineage_df['numbers'] = new_lineage_df['numbers'].fillna('')
-    if new_lineage_df.isempty():
-        pangocolors.to_csv('running_NS/config/colors.tsv', index=False)
-        exit()
-    
+
+
     pangocolors.loc[pangocolors['color'] == '#808080', 'color'] = np.nan
     pangocolors=pangocolors[~pangocolors['value'].isna()]
 

@@ -146,7 +146,7 @@ Ensure the script is stored in a directory accessible to the SLURM environment a
 The workflow generates:
 - A phylogenetic tree in Nextstrain format.
 - Updated metadata and lineage colors.
-- Results pushed to a designated GitHub repository.
+- Results pushed to [a designated GitHub repository](https://github.com/TGenNorth/arizona-covid-19).
 
 ## Notes
 

@@ -148,6 +148,8 @@ The workflow generates:
 - Updated metadata and lineage colors.
 - Results pushed to [a designated GitHub repository](https://github.com/TGenNorth/arizona-covid-19).
 
+<iframe src="https://nextstrain.org/community/tgennorth/arizona-covid-19/AZ?d=tree&onlyPanels&p=full&sidebar=closed" width="100%" height="600px"></iframe>
+
 ## Notes
 
 - Ensure SLURM, Conda, and Python configurations are properly set up on your system.

@@ -63,62 +63,65 @@ def process_new_number_df(new_number_df, predetermined_lineages):
     return predetermined_lineages
 
 def main():
-    # Read pangocolors CSV
+    # Read the current pangocolors CSV, read in all the lineages in arizona, gather new colors accordingly
     pangocolors = pd.read_csv('pangocolors.csv')
-    #get new pango lineages
     pangocolors_lineages = pangocolors['value'].values.tolist()
     arizona_meta = pd.read_csv('arizona_meta.tsv', sep='\t')
     all_arizona_lineages = arizona_meta['Pango lineage'].unique().tolist()
     missing_lineages = list(set(all_arizona_lineages) - set(pangocolors_lineages))
     
+    # Create a dataframe using the new lineages
     new_lineage_df = pd.DataFrame({
         'feature': ['Pango_lineage'] * len(missing_lineages),
         'value': missing_lineages,
         'color': [''] * len(missing_lineages)
     })
     new_lineage_df = new_lineage_df[~new_lineage_df['value'].isna()]
+    # If there are no new colors, write to the running_NS directory and exit.
     if new_lineage_df.empty:
         pangocolors.to_csv('running_NS/config/colors.tsv', index=False, header=False, sep='\t', mode='a')
         exit()
-    # Read new_lineage_df and process
-    new_lineage_df=new_lineage_df[~new_lineage_df['value'].isna()]
+
+    # Read new_lineage_df, get the lineage letters and numbers.
     new_lineage_df[['pango_letters', 'numbers']] = new_lineage_df['value'].str.split('.', n=1, expand=True)
     new_lineage_df['numbers'] = new_lineage_df['numbers'].fillna('')
 
-
-    pangocolors.loc[pangocolors['color'] == '#808080', 'color'] = np.nan
+    # Do not process NA lineages because the color generation functions cannot handle NA lineages
     pangocolors=pangocolors[~pangocolors['value'].isna()]
 
-    # Separate 'value' into 'pango_letters' and 'numbers'
+    # Separate 'value' into 'pango_letters' and 'numbers'. Same as above
     pangocolors[['pango_letters', 'numbers']] = pangocolors['value'].str.split('.', n=1, expand=True)
     pangocolors['numbers'] = pangocolors['numbers'].fillna('')
 
-    # Calculate HSL values for each row
+    # Calculate HSL values for each row. Only hue is used.
     pangocolors[['hue', 'saturation', 'lightness']] = pangocolors['color'].dropna().apply(lambda x: pd.Series(hex_to_hsl(x)))
 
-    #Get all the unique and new letters that do not exist in pangocolored
+    # Get all the distinct letters that do not exist in pangocolored. New letters get a new color. Similar letters and different numbers just get a new saturation and lightness value.
     distinct_lineage_df = new_lineage_df.drop_duplicates(subset=['pango_letters'])
     distinct_lineage_letter_df = distinct_lineage_df[~distinct_lineage_df['pango_letters'].isin(pangocolors['pango_letters'])]
 
-    # Function to convert HSL to HEX
+    # Add the new lineage letter dataframe to our output dataframe. Assign hues by finding the most distant color possible.
     pangocolors = add_new_lineage_letters(distinct_lineage_letter_df, pangocolors)
-    # If only the number after the letter is new, store into this df
-    # This should be all the things in pangocolorsgrays that aren't in pango colors now.
+
+    # Get the new number dataframe, meaning the letters are in pangocolors, but the number isn't. 
     new_number_df = new_lineage_df[~new_lineage_df['value'].isin(pangocolors['value'])]
 
+    #Add the new colors, which are slight changes in hue and saturation randomly generated. Each new number gets a randomly generated saturation and lightness, without considering the other colors already assigned.
     pangocolors = process_new_number_df(new_number_df, pangocolors)
 
     pangocolors = pangocolors[['feature', 'value', 'color']]
 
+    # add in NA as a lineage value again. This is to prevent anything that could be an issue in the future.
     new_row = {'feature': 'Pango_lineage', 'value': 'None', 'color': '#808080'}
     pangocolors = pangocolors.sort_values(by='value')
-    
+
     # Convert the new row to a DataFrame
     new_row_df = pd.DataFrame([new_row])
 
     # Concatenate the new row with the original DataFrame
     pangocolors = pd.concat([pangocolors, new_row_df], ignore_index=True)
 
+    # Write the the nextstrain run directory and save the pangocolors locally.
     pangocolors.to_csv('pangocolors.csv', index=False)
     pangocolors.to_csv('running_NS/config/colors.tsv', index=False, header=False, sep='\t', mode='a')
     

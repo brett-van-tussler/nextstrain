@@ -23,9 +23,8 @@ def main():
     # Extract year and first three letters of the month from the provided date
     current_date = str(datetime.now().date())
     current_year = current_date.split('-')[0]
-    first_three_letters = current_date.split('-')[1][:3].upper()
+    first_three_letters = datetime.now().strftime('%b').upper()
     folder = f"{current_year}{first_three_letters}"
-
     # Define the destination directory path
     dir_path = f"/tnorth_labs/COVIDseq/Nextstrain_buildArchive/cyclical/{folder}"
     # Create the directory if it doesn't already exist
@@ -45,7 +44,7 @@ def main():
 
         # Change to the Arizona COVID-19 GitHub directory
         os.chdir('/tnorth_labs/COVIDseq/Nextstrain_buildArchive/arizona-covid-19/auspice')
-
+        exit()
         # Stage the updated files in Git
         subprocess.run(['git', 'add', 'arizona-covid-19_AZ.json'])
         subprocess.run(['git', 'add', 'arizona-covid-19_AZ_tip-frequencies.json'])

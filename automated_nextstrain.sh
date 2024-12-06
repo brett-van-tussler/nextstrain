@@ -47,4 +47,4 @@ fileX=$(echo ${glober})
 cd ..
 today=$(date +"%Y-%m-%d")
 # update the github
-python3 github_upload.py -d $today
+python3 github_upload.py
